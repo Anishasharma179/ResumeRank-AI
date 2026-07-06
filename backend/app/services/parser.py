@@ -1,15 +1,7 @@
+from pathlib import Path
+
 import pdfplumber
 from docx import Document
-
-
-def extract_text_from_docx(file_path: str) -> str:
-    document = Document(file_path)
-
-    return "\n".join(
-        paragraph.text
-        for paragraph in document.paragraphs
-    )
-from pathlib import Path
 
 
 def extract_text_from_pdf(file_path: str) -> str:
@@ -23,6 +15,16 @@ def extract_text_from_pdf(file_path: str) -> str:
                 text += page_text + "\n"
 
     return text
+
+def extract_text_from_docx(file_path: str) -> str:
+    document = Document(file_path)
+
+    return "\n".join(
+        paragraph.text
+        for paragraph in document.paragraphs
+    )
+
+
 def extract_text(file_path: str) -> str:
     extension = Path(file_path).suffix.lower()
 

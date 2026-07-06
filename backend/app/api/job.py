@@ -43,12 +43,13 @@ async def upload_job_description(
     ranked_candidates = []
 
     for candidate in candidates:
-        score = calculate_match_score(
+
+        result = calculate_match_score(
             candidate.resume_text,
             job_description
         )
 
-        candidate.score = score
+        candidate.score = result["score"]
 
         ranked_candidates.append({
             "id": candidate.id,
@@ -56,7 +57,9 @@ async def upload_job_description(
             "email": candidate.email,
             "phone": candidate.phone,
             "skills": candidate.skills,
-            "score": score
+            "score": result["score"],
+            "matched_skills": result["matched_skills"],
+            "missing_skills": result["missing_skills"]
         })
 
     db.commit()

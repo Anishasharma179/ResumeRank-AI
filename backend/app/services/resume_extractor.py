@@ -6,11 +6,43 @@ nlp = spacy.load("en_core_web_sm")
 
 
 def extract_name(text: str) -> str:
-    doc = nlp(text)
+    lines = [
+        line.strip()
+        for line in text.splitlines()
+        if line.strip()
+    ]
 
-    for entity in doc.ents:
-        if entity.label_ == "PERSON":
-            return entity.text
+    ignore_words = {
+        "resume",
+        "education",
+        "skills",
+        "experience",
+        "projects",
+        "summary",
+        "objective",
+        "linkedin",
+        "github",
+        "email",
+        "phone",
+        "contact"
+    }
+
+    for line in lines[:10]:
+        if len(line.split()) > 4:
+            continue
+
+        lower = line.lower()
+
+        if any(word in lower for word in ignore_words):
+            continue
+
+        if "@" in line:
+            continue
+
+        if any(char.isdigit() for char in line):
+            continue
+
+        return line
 
     return ""
 

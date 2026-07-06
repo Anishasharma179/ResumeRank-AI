@@ -45,28 +45,47 @@ async def upload_resume(
         print("ERROR:", repr(e))
         raise
 
-    candidate = Candidate(
-        name=candidate_data["name"] or "Unknown",
-        email=candidate_data["email"],
-        phone=candidate_data["phone"],
-        skills=", ".join(candidate_data["skills"]),
-        resume_text=resume_text,
-        score=0.0
+    # Check if candidate already exists
+    existing_candidate = (
+        db.query(Candidate)
+        .filter(Candidate.email == candidate_data["email"])
+        .first()
     )
 
-    db.add(candidate)
-    db.commit()
-    db.refresh(candidate)
+    if existing_candidate:
+        # Update existing candidate
+        existing_candidate.name = candidate_data["name"] or "Unknown"
+        existing_candidate.phone = candidate_data["phone"]
+        existing_candidate.skills = ", ".join(candidate_data["skills"])
+        existing_candidate.resume_text = resume_text
+
+        db.commit()
+        db.refresh(existing_candidate)
+
+    else:
+        # Insert new candidate
+        candidate = Candidate(
+            name=candidate_data["name"] or "Unknown",
+            email=candidate_data["email"],
+            phone=candidate_data["phone"],
+            skills=", ".join(candidate_data["skills"]),
+            resume_text=resume_text,
+            score=0.0
+        )
+
+        db.add(candidate)
+        db.commit()
+        db.refresh(candidate)
 
     return {
-        "filename": file.filename,
-        "status": "uploaded successfully",
-        "candidate": candidate_data
-    }
-    
+    "filename": file.filename,
+    "status": "uploaded successfully",
+    "candidate": candidate_data,
+    "resume_text": resume_text
+}
+
 
 @router.get("/candidates")
 def get_candidates(db: Session = Depends(get_db)):
     candidates = db.query(Candidate).all()
-
     return candidates
