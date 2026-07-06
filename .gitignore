@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual Environment
+backend/venv/
+venv/
+
+# Environment Variables
+.env
+
+# Database
+*.db
+*.sqlite3
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Python cache
+.pytest_cache/
+
+# Build
+build/
+dist/
+
+# Logs
+*.log
+
+# Uploaded resumes
+backend/uploads/
+
+# Job descriptions
+backend/job_descriptions/
